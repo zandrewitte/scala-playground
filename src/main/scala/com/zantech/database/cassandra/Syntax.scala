@@ -1,19 +1,20 @@
-package com.zantech.cassandra
+package com.zantech.database.cassandra
 
 import akka.util.Timeout
 import com.datastax.driver.core._
-import CassandraAPI.{ Cassandra, CassandraDBSettings }
-import DB.Query
+import com.zantech.database.Database
+import com.zantech.database.Database._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language._
 import scala.reflect.ClassTag
 import scalaz.Functor
 
 object Syntax {
+  final implicit val instance: Database[Session, Future, Row] = CassandraAPI
 
-  implicit class cassandraOps[A](cassandra: Cassandra[A]) {
-    def runWith(cassandraDBSettings: CassandraDBSettings): Future[A] =
+  implicit class cassandraOps[A](cassandra: CassandraAPI.DB[A]) {
+    def runWith(cassandraDBSettings: CassandraAPI.Settings): Future[A] =
       CassandraAPI.runWith(cassandra, cassandraDBSettings)
   }
 
@@ -30,7 +31,7 @@ object Syntax {
                         executionContext: ExecutionContext,
                         timeout: Timeout,
                         functor: Functor[F],
-                        classTag: ClassTag[F[A]]): Cassandra[F[A]] =
+                        classTag: ClassTag[F[A]]): CassandraAPI.DB[F[A]] =
       cassandraAPI.convertTo(futRows)
   }
 
@@ -46,7 +47,8 @@ object Syntax {
       *
       * @return Future list of models.
       */
-    def select(implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext, timeout: Timeout): Cassandra[List[Row]] =
+    def select(implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext,
+               timeout: Timeout): CassandraAPI.DB[List[Row]] =
       cassandraAPI.select(boundStatement)
 
     /**
@@ -56,7 +58,7 @@ object Syntax {
       */
     def selectOne(implicit cassandraAPI: CassandraAPI,
                   executionContext: ExecutionContext,
-                  timeout: Timeout): Cassandra[Option[Row]] =
+                  timeout: Timeout): CassandraAPI.DB[Option[Row]] =
       cassandraAPI.selectOne(boundStatement)
 
     /**
@@ -64,7 +66,8 @@ object Syntax {
       *
       * @return Future not used result.
       */
-    def executeAsync(implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext, timeout: Timeout): Cassandra[Unit] =
+    def executeAsync(implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext,
+                     timeout: Timeout): CassandraAPI.DB[Unit] =
       cassandraAPI.executeAsync(boundStatement)
   }
 
@@ -79,9 +82,9 @@ object Syntax {
       * @param args Arguments that needs to be bound to the Prepared Statement.
       * @return
       */
-    def bind(
-        args: AnyRef*
-    )(implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext, timeout: Timeout): Cassandra[BoundStatement] =
+    def bind(args: AnyRef*)
+            (implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext,
+             timeout: Timeout): CassandraAPI.DB[BoundStatement] =
       cassandraAPI.bind(preparedStatement)(args)
   }
 
@@ -92,7 +95,7 @@ object Syntax {
   implicit class stringOps(query: String) {
     def prepareAsync(implicit cassandraAPI: CassandraAPI,
                      executionContext: ExecutionContext,
-                     timeout: Timeout): Cassandra[PreparedStatement] =
+                     timeout: Timeout): CassandraAPI.DB[PreparedStatement] =
       cassandraAPI.prepareAsync(Query(query))
   }
 
@@ -109,7 +112,7 @@ object Syntax {
       */
     def prepareAsync(implicit cassandraAPI: CassandraAPI,
                      executionContext: ExecutionContext,
-                     timeout: Timeout): Cassandra[PreparedStatement] =
+                     timeout: Timeout): cassandraAPI.DB[PreparedStatement] =
       cassandraAPI.prepareAsync(query)
   }
 }

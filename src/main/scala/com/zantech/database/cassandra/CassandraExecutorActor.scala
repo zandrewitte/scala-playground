@@ -1,13 +1,12 @@
-package com.zantech.cassandra
+package com.zantech.database.cassandra
 
 import akka.actor.{ Actor, ActorLogging, ActorSystem, Props, Status }
 import akka.routing.FromConfig
 import akka.pattern.pipe
 import com.datastax.driver.core._
-import com.zantech.cassandra.CassandraExecutorActor.{ Execute, Prepare, RowOperations }
-import DB._
+import com.zantech.database.cassandra.CassandraExecutorActor.{ Execute, Prepare, RowOperations }
+import com.zantech.database.Database._
 
-import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
 import scala.language.higherKinds
 import scalaz._, Scalaz._
@@ -21,10 +20,10 @@ class CassandraExecutorActor extends Actor with ActorLogging {
   import context.dispatcher
 
   override def receive: Receive = {
-    case Execute(session, statement) =>
+    case Execute(session: Session, statement: Statement) =>
       session.executeAsync(statement).asScala.pipeTo(sender())
 
-    case Prepare(session, query) =>
+    case Prepare(session: Session, query) =>
       session.prepareAsync(query).asScala.pipeTo(sender())
 
     case rowOperations: RowOperations[_, _] =>
@@ -65,14 +64,14 @@ object CassandraExecutorActor {
     *
     * @param statement The prepared statement that needs to be executed.
     */
-  final case class Execute(session: Session, statement: Statement)
+  final case class Execute[A, B](session: A, statement: B)
 
   /**
     * The case class that is used to send a string cql statement to the Executor Actor to be prepared for later usage.
     *
     * @param query The CQL query string
     */
-  final case class Prepare(session: Session, query: String)
+  final case class Prepare[A](session: A, query: String)
 
   /**
     * The trait and following object that is used to operate on a result set, returning a type of T.
