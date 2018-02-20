@@ -31,7 +31,8 @@ libraryDependencies ++= Seq(
   library.cassandra,
   library.mockito,
   library.scalaTest,
-  library.scalaz
+  library.scalaz,
+  library.shapeless
 )
 
 lazy val library = new {
@@ -39,10 +40,11 @@ lazy val library = new {
   object Version {
     val akka            = "2.5.9"
     val cassandraDriver = "3.2.0"
-    val scala           = "2.12.4"
     val mockito         = "2.7.19"
+    val scala           = "2.12.4"
     val scalaz          = "7.2.18"
     val scalaTest       = "3.0.1"
+    val shapeless       = "2.3.2"
   }
 
   val scalaTest = "org.scalatest"          %% "scalatest"            % Version.scalaTest % Test
@@ -50,6 +52,7 @@ lazy val library = new {
   val cassandra = "com.datastax.cassandra" % "cassandra-driver-core" % Version.cassandraDriver
   val mockito   = "org.mockito"            % "mockito-core"          % Version.mockito % Test
   val akkaActor = "com.typesafe.akka"      %% "akka-actor"           % Version.akka
+  val shapeless = "com.chuusai"            %% "shapeless"            % Version.shapeless
 }
 
 // -----------------------------------------------------------------------------
