@@ -3,29 +3,26 @@ package com.zantech.database
 import akka.pattern.ask
 import akka.actor.ActorRef
 import akka.util.Timeout
-import com.google.common.util.concurrent.{FutureCallback, Futures, ListenableFuture}
+import com.google.common.util.concurrent.{ FutureCallback, Futures, ListenableFuture }
 import com.zantech.database.cassandra.CassandraExecutorActor.Execute
 
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.language._
 import scalaz.Reader
 import Database._
 
 trait Database[T, W[_], R] {
   type Settings = DBSettings[T]
-  type DB[A] = Reader[Settings, W[A]]
+  type DB[A]    = Reader[Settings, W[A]]
 
   final def prepare[A](pf: PartialFunction[Settings, W[A]]): DB[A] =
     Reader(pf)
 
-  def select[A](statement: W[A])
-               (implicit executionContext: ExecutionContext, timeout: Timeout): DB[List[R]]
+  def select[A](statement: W[A])(implicit executionContext: ExecutionContext, timeout: Timeout): DB[List[R]]
 
-  def selectOne[A](statement: W[A])(implicit executionContext: ExecutionContext,
-                                                        timeout: Timeout): DB[Option[R]]
+  def selectOne[A](statement: W[A])(implicit executionContext: ExecutionContext, timeout: Timeout): DB[Option[R]]
 
-  def executeAsync[A](statement: W[A])(implicit executionContext: ExecutionContext,
-                                                           timeout: Timeout): DB[Unit]
+  def executeAsync[A](statement: W[A])(implicit executionContext: ExecutionContext, timeout: Timeout): DB[Unit]
 
   /**
     * The generic function that is used to send a statement to be executed asynchronously.
@@ -33,8 +30,8 @@ trait Database[T, W[_], R] {
     * @param statement the statement to be executed.
     * @return a ResultSet for the performed statement.
     */
-  protected def sendExecute[A](executorActor: ActorRef, statement: A, session: T)
-                            (implicit executionContext: ExecutionContext, timeout: Timeout): Future[_] =
+  protected def sendExecute[A](executorActor: ActorRef, statement: A, session: T)(implicit executionContext: ExecutionContext,
+                                                                                  timeout: Timeout): Future[_] =
     executorActor ? Execute(session, statement)
 }
 
@@ -49,7 +46,7 @@ object Database {
       Futures.addCallback(
         f,
         new FutureCallback[A] {
-          override def onSuccess(a: A) = p.success(a)
+          override def onSuccess(a: A)         = p.success(a)
           override def onFailure(t: Throwable) = p.failure(t)
         }
       )

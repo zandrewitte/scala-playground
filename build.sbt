@@ -28,6 +28,8 @@ parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
   library.akkaActor,
+  library.akkaHttp,
+  library.akkaStream,
   library.cassandra,
   library.mockito,
   library.scalaTest,
@@ -39,20 +41,26 @@ lazy val library = new {
 
   object Version {
     val akka            = "2.5.9"
+    val akkaHttp        = "10.1.0"
+    val akkaStream      = "2.5.11"
     val cassandraDriver = "3.2.0"
-    val mockito         = "2.7.19"
-    val scala           = "2.12.4"
-    val scalaz          = "7.2.18"
-    val scalaTest       = "3.0.1"
-    val shapeless       = "2.3.2"
+//    val circe           = "0.9.2"
+    val mockito   = "2.7.19"
+    val scala     = "2.12.4"
+    val scalaz    = "7.2.18"
+    val scalaTest = "3.0.1"
+    val shapeless = "2.3.2"
   }
 
-  val scalaTest = "org.scalatest"          %% "scalatest"            % Version.scalaTest % Test
-  val scalaz    = "org.scalaz"             %% "scalaz-core"          % Version.scalaz
-  val cassandra = "com.datastax.cassandra" % "cassandra-driver-core" % Version.cassandraDriver
-  val mockito   = "org.mockito"            % "mockito-core"          % Version.mockito % Test
-  val akkaActor = "com.typesafe.akka"      %% "akka-actor"           % Version.akka
-  val shapeless = "com.chuusai"            %% "shapeless"            % Version.shapeless
+  val akkaActor  = "com.typesafe.akka"      %% "akka-actor"           % Version.akka
+  val akkaHttp   = "com.typesafe.akka"      %% "akka-http"            % Version.akkaHttp
+  val akkaStream = "com.typesafe.akka"      %% "akka-stream"          % Version.akkaStream
+  val cassandra  = "com.datastax.cassandra" % "cassandra-driver-core" % Version.cassandraDriver
+  val mockito    = "org.mockito"            % "mockito-core"          % Version.mockito % Test
+//  val circe      = "io.circe"               %  "circe-core"            % Version.circe
+  val scalaTest = "org.scalatest" %% "scalatest"   % Version.scalaTest % Test
+  val scalaz    = "org.scalaz"    %% "scalaz-core" % Version.scalaz
+  val shapeless = "com.chuusai"   %% "shapeless"   % Version.shapeless
 }
 
 // -----------------------------------------------------------------------------

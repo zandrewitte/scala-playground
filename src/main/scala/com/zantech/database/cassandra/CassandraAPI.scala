@@ -23,7 +23,7 @@ object CassandraAPI extends CassandraAPI {
     * @return Future list of models.
     */
   override def select[A](boundStatement: Future[A])(implicit executionContext: ExecutionContext,
-                                                              timeout: Timeout): DB[List[Row]] =
+                                                    timeout: Timeout): DB[List[Row]] =
     prepare {
       case DBSettings(session, actor) =>
         for {
@@ -38,8 +38,8 @@ object CassandraAPI extends CassandraAPI {
     * @param boundStatement the prepared statement that has been bound with the required arguments.
     * @return Future optional model.
     */
-  override def selectOne[A](boundStatement: Future[A])
-                           (implicit executionContext: ExecutionContext, timeout: Timeout): DB[Option[Row]] =
+  override def selectOne[A](boundStatement: Future[A])(implicit executionContext: ExecutionContext,
+                                                       timeout: Timeout): DB[Option[Row]] =
     prepare {
       case DBSettings(session, actor) =>
         for {
@@ -54,8 +54,8 @@ object CassandraAPI extends CassandraAPI {
     * @param boundStatement the prepared statement that has been bound with the required arguments.
     * @return Future not used result.
     */
-  override def executeAsync[A](boundStatement: Future[A])
-                              (implicit executionContext: ExecutionContext, timeout: Timeout): DB[Unit] =
+  override def executeAsync[A](boundStatement: Future[A])(implicit executionContext: ExecutionContext,
+                                                          timeout: Timeout): DB[Unit] =
     prepare {
       case DBSettings(session, actor) =>
         for {
@@ -87,8 +87,7 @@ trait CassandraAPI extends Database[Session, Future, Row] {
     * @param query A CQL string query.
     * @return future successfully Prepared statement.
     */
-  def prepareAsync(query: Query)(implicit executionContext: ExecutionContext,
-                                          timeout: Timeout): DB[PreparedStatement] =
+  def prepareAsync(query: Query)(implicit executionContext: ExecutionContext, timeout: Timeout): DB[PreparedStatement] =
     prepare {
       case DBSettings(session, actor) =>
         (actor ? Prepare(session, query.q)).mapTo[PreparedStatement]
@@ -100,7 +99,7 @@ trait CassandraAPI extends Database[Session, Future, Row] {
     * @return
     */
   def bind(preparedStatement: Future[PreparedStatement])(args: AnyRef*)(implicit executionContext: ExecutionContext,
-                                                                                 timeout: Timeout): DB[BoundStatement] =
+                                                                        timeout: Timeout): DB[BoundStatement] =
     prepare { case _ => preparedStatement.map(_.bind(args)) }
 
   /**
@@ -110,10 +109,10 @@ trait CassandraAPI extends Database[Session, Future, Row] {
     * @return returns all the rows that were returned as a list of A's.
     */
   def convertTo[F[_], A: ClassTag](futRows: Future[F[Row]])(implicit ev: Row => A,
-                                                                     executionContext: ExecutionContext,
-                                                                     timeout: Timeout,
-                                                                     functor: Functor[F],
-                                                                     classTag: ClassTag[F[A]]): DB[F[A]] =
+                                                            executionContext: ExecutionContext,
+                                                            timeout: Timeout,
+                                                            functor: Functor[F],
+                                                            classTag: ClassTag[F[A]]): DB[F[A]] =
     prepare {
       case DBSettings(_, actor) =>
         for {

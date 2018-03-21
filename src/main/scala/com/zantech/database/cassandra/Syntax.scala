@@ -5,7 +5,7 @@ import com.datastax.driver.core._
 import com.zantech.database.Database
 import com.zantech.database.Database._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.language._
 import scala.reflect.ClassTag
 import scalaz.Functor
@@ -47,7 +47,8 @@ object Syntax {
       *
       * @return Future list of models.
       */
-    def select(implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext,
+    def select(implicit cassandraAPI: CassandraAPI,
+               executionContext: ExecutionContext,
                timeout: Timeout): CassandraAPI.DB[List[Row]] =
       cassandraAPI.select(boundStatement)
 
@@ -66,7 +67,8 @@ object Syntax {
       *
       * @return Future not used result.
       */
-    def executeAsync(implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext,
+    def executeAsync(implicit cassandraAPI: CassandraAPI,
+                     executionContext: ExecutionContext,
                      timeout: Timeout): CassandraAPI.DB[Unit] =
       cassandraAPI.executeAsync(boundStatement)
   }
@@ -82,9 +84,9 @@ object Syntax {
       * @param args Arguments that needs to be bound to the Prepared Statement.
       * @return
       */
-    def bind(args: AnyRef*)
-            (implicit cassandraAPI: CassandraAPI, executionContext: ExecutionContext,
-             timeout: Timeout): CassandraAPI.DB[BoundStatement] =
+    def bind(args: AnyRef*)(implicit cassandraAPI: CassandraAPI,
+                            executionContext: ExecutionContext,
+                            timeout: Timeout): CassandraAPI.DB[BoundStatement] =
       cassandraAPI.bind(preparedStatement)(args)
   }
 
