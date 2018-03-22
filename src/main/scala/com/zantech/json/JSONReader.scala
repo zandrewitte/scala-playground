@@ -12,10 +12,7 @@ object JSONReader {
     val ListObjectsPattern = """^\[(\{.+\})\,?\]$""".r
     val ListValuesPattern = """([\"?\w\s\d\"?]+),?\s?""".r
 
-//    @tailrec
     def readStringRec(string: String, acc: JsRootValue): JsRootValue = {
-//      println(s"string: $string")
-//      println(s"acc: $acc")
       string match {
         case ListObjectsPattern(listObjects) =>
           listObjects
@@ -29,7 +26,7 @@ object JSONReader {
             }
 
         case list if list.startsWith("[") && list.endsWith("]") =>
-          val values = ListValuesPattern.findAllMatchIn(list).map(matched => processValue(matched.group(1))).toSeq
+          val values = ListValuesPattern.findAllMatchIn(list).map(matched => processValue(matched.group(1))).toList
           JList(values:_*)
 
         case KeyWithValuePattern(key, value, rest) =>
@@ -86,12 +83,14 @@ object JSONReader {
   }
 
   private val StringPattern = """^\"([\w\d?\s?]*)\"""".r
-  private val NumberPattern = """([\d]*)""".r
+  private val NumberPattern = """([\d]+)""".r
+  private val DoublePattern = """([\d]+\.[\d]+)""".r
 
   private def processValue(value: String): JsValue = {
     value match {
       case StringPattern(stringVal) => JString(stringVal)
       case NumberPattern(numberVal) => JInt(numberVal.toInt)
+      case DoublePattern(doubleVal) => JDouble(doubleVal.toDouble)
       case _ => JNil
     }
   }

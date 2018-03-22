@@ -44,29 +44,11 @@ object JSONWriter {
     list.values.map {
       case JString(stringVal) => writeWithIndent(s""""$stringVal"""", indent)
       case JInt(intVal) => writeWithIndent(s"$intVal", indent)
+      case JDouble(doubleVal) => writeWithIndent(s"$doubleVal", indent)
       case jObject: JObject => write(jObject, indent)
       case jList: JList => writeListRec(jList, indent)
       case _ => ""
     }.mkString(",\n")
-  }
-
-  object Syntax {
-    implicit class JsRootValueOps(jsRootValue: JsRootValue) {
-      def write: String = jsRootValue match {
-        case jObject: JObject => JSONWriter.write(jObject)
-        case jList: JList => JSONWriter.writeList(jList)
-        case _ => ""
-      }
-    }
-
-
-    implicit class JsonObjectOps(jObject: JObject) {
-      def write: String = JSONWriter.write(jObject)
-    }
-
-    implicit class JsonListOps(jList: JList) {
-      def write: String = JSONWriter.writeList(jList)
-    }
   }
 
 }
