@@ -1,6 +1,6 @@
-package com.zantech.json
+package json
 
-import com.zantech.json.JSON._
+import JSON._
 
 object JSONWriter {
 

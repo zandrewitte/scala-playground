@@ -1,8 +1,7 @@
-package com.zantech.json
+package json
 
-import com.zantech.json.JSON._
-import com.zantech.json.JSONUtils._
-
+import JSON._
+import JSONUtils.{getKeyRec, getKeyRecWithAcc}
 import scala.language._
 
 object Syntax {
@@ -33,9 +32,15 @@ object Syntax {
 
   implicit class JsonListOps(jList: JList) {
     def write: String = JSONWriter.writeList(jList)
+    def getAsStrings: Vector[String] = jList.values.map{ case JString(string) => string }.toVector
+    def getAsInt: Vector[Int] = jList.values.map{ case JInt(int) => int }.toVector
   }
 
   implicit def JStringToString(jString: JString): String = jString.string
+  implicit def StringToJString(string: String): JString = JString(string)
   implicit def JIntToInt(jInt: JInt): Int = jInt.number
+  implicit def IntToJInt(int: Int): JInt = JInt(int)
+  implicit def JDoubleToDouble(jDouble: JDouble): Double = jDouble.number
+  implicit def DoubleToJDouble(double: Double): JDouble = JDouble(double)
 
 }
