@@ -30,7 +30,9 @@ libraryDependencies ++= Seq(
   library.akkaActor,
   library.akkaHttp,
   library.akkaStream,
+  library.akkaStreamCirce,
   library.cassandra,
+  library.circe,
   library.mockito,
   library.scalaTest,
   library.scalaz,
@@ -43,8 +45,9 @@ lazy val library = new {
     val akka            = "2.5.9"
     val akkaHttp        = "10.1.0"
     val akkaStream      = "2.5.11"
+    val akkaStreamCirce = "3.5.0"
     val cassandraDriver = "3.2.0"
-//    val circe           = "0.9.2"
+    val circe           = "0.9.0"
     val mockito   = "2.7.19"
     val scala     = "2.12.4"
     val scalaz    = "7.2.18"
@@ -55,12 +58,14 @@ lazy val library = new {
   val akkaActor  = "com.typesafe.akka"      %% "akka-actor"           % Version.akka
   val akkaHttp   = "com.typesafe.akka"      %% "akka-http"            % Version.akkaHttp
   val akkaStream = "com.typesafe.akka"      %% "akka-stream"          % Version.akkaStream
+  val akkaStreamCirce = "de.knutwalker" %% "akka-stream-circe" % akkaStreamCirce
   val cassandra  = "com.datastax.cassandra" % "cassandra-driver-core" % Version.cassandraDriver
   val mockito    = "org.mockito"            % "mockito-core"          % Version.mockito % Test
-//  val circe      = "io.circe"               %  "circe-core"            % Version.circe
+  val circe      = "io.circe"               % "circe-generic"         % Version.circe
   val scalaTest = "org.scalatest" %% "scalatest"   % Version.scalaTest % Test
   val scalaz    = "org.scalaz"    %% "scalaz-core" % Version.scalaz
   val shapeless = "com.chuusai"   %% "shapeless"   % Version.shapeless
+
 }
 
 // -----------------------------------------------------------------------------
