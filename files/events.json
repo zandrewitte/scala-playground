@@ -1,0 +1,28 @@
+{
+  "events": [
+    {
+      "timestamp": "1",
+      "component": "web-app",
+      "check_state": "CPU load",
+      "state": "clear"
+    },
+    {
+      "timestamp": "3",
+      "component": "iphone-app",
+      "check_state": "CPU load",
+      "state": "clear"
+    },
+    {
+      "timestamp": "2",
+      "component": "iphone-app",
+      "check_state": "CPU load",
+      "state": "alert"
+    },
+    {
+      "timestamp": "4",
+      "component": "common-api",
+      "check_state": "CPU load",
+      "state": "warning"
+    }
+  ]
+}
